@@ -11,10 +11,4 @@ func Web() {
 			"Hello": "Goravel",
 		})
 	})
-
-	facades.Route().Get("/credit_card_validation", func(ctx http.Context) http.Response {
-		return ctx.Response().Json(http.StatusOK, http.Json{
-			"Hello": "Goravel",
-		})
-	})
 }
