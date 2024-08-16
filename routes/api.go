@@ -11,5 +11,5 @@ func Api() {
 	facades.Route().Get("/users/{id}", userController.Show)
 
 	luhnController := controllers.NewLuhnController()
-	facades.Route().Get("/credit_card_validation/{credit_card_number}", luhnController.Show)
+	facades.Route().Post("/credit_card_validation/json", luhnController.Json)
 }
