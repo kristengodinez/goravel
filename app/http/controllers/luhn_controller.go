@@ -4,6 +4,7 @@ import "github.com/goravel/framework/contracts/http"
 
 /*
 curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/json'
+curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/json' --header 'Content-Type: application/json' --data-raw '{"creditCardNumber": "123"}'
 */
 
 type CreditCard struct {
