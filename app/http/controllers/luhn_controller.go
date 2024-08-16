@@ -8,7 +8,9 @@ import (
 
 /*
 curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/json'
-curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/json' --header 'Content-Type: application/json' --data-raw '{"creditCardNumber": "123"}'
+curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/json' --header 'Content-Type: application/json' --data-raw '{"creditCardNumber": "3379 5135 6110 8795"}'  # True
+curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/json' --header 'Content-Type: application/json' --data-raw '{"creditCardNumber": "3379 5135 6110 8794"}'  # False
+curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/json' --header 'Content-Type: application/json' --data-raw '{"creditCardNumber": "123"}'                  # False
 */
 
 type CreditCard struct {
@@ -55,8 +57,10 @@ func GetCardValidation(number string) bool {
 	var factor int = 2
 	var sum int = 0
 	var product int = 1
+	var count int = 0
 	for _, ch := range number {
 		if unicode.IsDigit(ch) {
+			count += 1
 			product = (int(ch) - '0') * factor
 
 			if product >= 10 {
@@ -73,7 +77,7 @@ func GetCardValidation(number string) bool {
 		}
 	}
 
-	if sum%10 == 0 {
+	if sum%10 == 0 && count == 16 {
 		return true
 	}
 
