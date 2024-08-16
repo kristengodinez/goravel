@@ -14,3 +14,9 @@ func TestLuhnControllerTestSuite(t *testing.T) {
 	suite.Run(t, &LuhnControllerTestSuite{})
 
 }
+
+func (s *LuhnControllerTestSuite) SetupTest() {
+}
+
+func (s *LuhnControllerTestSuite) TearDownTest() {
+}
