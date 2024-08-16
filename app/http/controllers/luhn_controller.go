@@ -2,6 +2,10 @@ package controllers
 
 import "github.com/goravel/framework/contracts/http"
 
+type CreditCard struct {
+	CreditCardNumber string `json:"CreditCardNumber" form:"CreditCardNumber"`
+}
+
 type LuhnController struct{}
 
 func NewLuhnController() *LuhnController {
