@@ -13,5 +13,7 @@ func NewLuhnController() *LuhnController {
 }
 
 func (r *LuhnController) Json(ctx http.Context) http.Response {
-	return ctx.Response().Success().Json(http.Json{})
+	return ctx.Response().Success().Json(http.Json{
+		"creditCardNumber": "123",
+	})
 }
