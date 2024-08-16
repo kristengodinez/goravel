@@ -13,9 +13,14 @@ func NewLuhnController() *LuhnController {
 }
 
 func (r *LuhnController) Json(ctx http.Context) http.Response {
-	validator, _ := ctx.Request().Validate(map[string]string{
+	validator, err := ctx.Request().Validate(map[string]string{
 		"creditCardNumber": "required",
 	})
+	if err != nil {
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{
+			"message": err.Error(),
+		})
+	}
 	if validator.Fails() {
 		return ctx.Response().Json(http.StatusBadRequest, http.Json{
 			"message": validator.Errors().All(),
@@ -28,7 +33,8 @@ func (r *LuhnController) Json(ctx http.Context) http.Response {
 			"message": err.Error(),
 		})
 	}
+
 	return ctx.Response().Success().Json(http.Json{
-		"creditCardNumber": "123",
+		"creditCardNumber": creditCard.CreditCardNumber,
 	})
 }
