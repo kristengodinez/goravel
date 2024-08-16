@@ -55,4 +55,5 @@ func (s *LuhnControllerTestSuite) TestJson() {
 	mockContext.AssertExpectations(s.T())
 	mockRequest.AssertExpectations(s.T())
 	mockResponse.AssertExpectations(s.T())
+	mockValidator.AssertExpectations(s.T())
 }
