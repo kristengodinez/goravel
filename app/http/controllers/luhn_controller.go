@@ -2,6 +2,10 @@ package controllers
 
 import "github.com/goravel/framework/contracts/http"
 
+/*
+curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/json'
+*/
+
 type CreditCard struct {
 	CreditCardNumber string `json:"CreditCardNumber" form:"CreditCardNumber"`
 }
