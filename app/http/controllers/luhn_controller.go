@@ -11,10 +11,16 @@ curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/jso
 curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/json' --header 'Content-Type: application/json' --data-raw '{"creditCardNumber": "3379 5135 6110 8795"}'  # True
 curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/json' --header 'Content-Type: application/json' --data-raw '{"creditCardNumber": "3379 5135 6110 8794"}'  # False
 curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/json' --header 'Content-Type: application/json' --data-raw '{"creditCardNumber": "123"}'                  # False
+
+curl --location --request POST 'http://127.0.0.1:3000/credit_card_validation/json' --header 'Content-Type: application/json' --data-raw '{"numbers": [{"creditCardNumber": "123"}, {"creditCardNumber": "3379 5135 6110 8795"}]}'  # "123": False, "3379 5135 6110 8795": True
 */
 
+type CreditCardNumber struct {
+	Number string `json:"creditCardNumber"`
+}
+
 type CreditCard struct {
-	CreditCardNumber string `json:"CreditCardNumber" form:"CreditCardNumber"`
+	Numbers []CreditCardNumber `json:"numbers"`
 }
 
 type LuhnController struct{}
@@ -25,7 +31,7 @@ func NewLuhnController() *LuhnController {
 
 func (r *LuhnController) Json(ctx http.Context) http.Response {
 	validator, err := ctx.Request().Validate(map[string]string{
-		"creditCardNumber": "required",
+		"numbers": "required",
 	})
 	if err != nil {
 		return ctx.Response().Json(http.StatusBadRequest, http.Json{
@@ -45,12 +51,13 @@ func (r *LuhnController) Json(ctx http.Context) http.Response {
 		})
 	}
 
-	GetCardValidation(creditCard.CreditCardNumber)
+	is_valid_results := http.Json{}
+	for _, creditCard := range creditCard.Numbers {
+		num := creditCard.Number
+		is_valid_results[num] = GetCardValidation(num)
+	}
 
-	return ctx.Response().Success().Json(http.Json{
-		"creditCardNumber": creditCard.CreditCardNumber,
-		"isValid":          GetCardValidation(creditCard.CreditCardNumber),
-	})
+	return ctx.Response().Success().Json(is_valid_results)
 }
 
 func GetCardValidation(number string) bool {

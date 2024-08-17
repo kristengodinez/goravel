@@ -32,13 +32,22 @@ func (s *LuhnControllerTestSuite) TestJson() {
 	mockValidator := mockFactory.ValidationValidator()
 	mockContext.EXPECT().Request().Return(mockRequest).Once()
 	mockRequest.EXPECT().Validate(map[string]string{
-		"creditCardNumber": "required",
+		"numbers": "required",
 	}).Return(mockValidator, nil).Once()
 	mockValidator.EXPECT().Fails().Return(false).Once()
 
 	var creditCard CreditCard
 	mockValidator.EXPECT().Bind(&creditCard).Run(func(creditCard any) {
-		creditCard.(*CreditCard).CreditCardNumber = "123"
+		var numbers []CreditCardNumber
+		numbers = []CreditCardNumber{
+			{
+				Number: "123",
+			},
+			{
+				Number: "3379 5135 6110 8795",
+			},
+		}
+		creditCard.(*CreditCard).Numbers = numbers
 	}).Return(nil).Once()
 
 	mockContext.EXPECT().Response().Return(mockResponse).Once()
@@ -46,9 +55,11 @@ func (s *LuhnControllerTestSuite) TestJson() {
 	mockResponse.EXPECT().Success().Return(mockResponseStatus).Once()
 
 	resp := &gin.JsonResponse{}
-	mockResponseStatus.EXPECT().Json(http.Json{
-		"creditCardNumber": "123",
-	}).Return(resp).Once()
+	expected_results := http.Json{
+		"123":                 false,
+		"3379 5135 6110 8795": true,
+	}
+	mockResponseStatus.EXPECT().Json(expected_results).Return(resp).Once()
 
 	s.Equal(resp, NewLuhnController().Json(mockContext))
 
