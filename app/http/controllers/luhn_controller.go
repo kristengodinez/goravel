@@ -23,6 +23,11 @@ type CreditCard struct {
 	Numbers []CreditCardNumber `json:"numbers"`
 }
 
+type CreditCardResponse struct {
+	CreditCardNumber string `json:"creditCardNumber"`
+	IsValid          bool   `json:"isValid"`
+}
+
 type LuhnController struct{}
 
 func NewLuhnController() *LuhnController {
@@ -51,10 +56,13 @@ func (r *LuhnController) Json(ctx http.Context) http.Response {
 		})
 	}
 
-	is_valid_results := http.Json{}
+	is_valid_results := []CreditCardResponse{}
 	for _, creditCard := range creditCard.Numbers {
 		num := creditCard.Number
-		is_valid_results[num] = GetCardValidation(num)
+		is_valid_results = append(is_valid_results, CreditCardResponse{
+			CreditCardNumber: num,
+			IsValid:          GetCardValidation(num),
+		})
 	}
 
 	return ctx.Response().Success().Json(is_valid_results)

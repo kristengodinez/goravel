@@ -3,7 +3,6 @@ package controllers
 import (
 	"testing"
 
-	"github.com/goravel/framework/contracts/http"
 	testingmock "github.com/goravel/framework/testing/mock"
 	"github.com/goravel/gin"
 	"github.com/stretchr/testify/suite"
@@ -55,9 +54,15 @@ func (s *LuhnControllerTestSuite) TestJson() {
 	mockResponse.EXPECT().Success().Return(mockResponseStatus).Once()
 
 	resp := &gin.JsonResponse{}
-	expected_results := http.Json{
-		"123":                 false,
-		"3379 5135 6110 8795": true,
+	expected_results := []CreditCardResponse{
+		{
+			CreditCardNumber: "123",
+			IsValid:          false,
+		},
+		{
+			CreditCardNumber: "3379 5135 6110 8795",
+			IsValid:          true,
+		},
 	}
 	mockResponseStatus.EXPECT().Json(expected_results).Return(resp).Once()
 
