@@ -54,16 +54,19 @@ func (s *LuhnControllerTestSuite) TestJson() {
 	mockResponse.EXPECT().Success().Return(mockResponseStatus).Once()
 
 	resp := &gin.JsonResponse{}
-	expected_results := []CreditCardResponse{
-		{
-			CreditCardNumber: "123",
-			IsValid:          false,
-		},
-		{
-			CreditCardNumber: "3379 5135 6110 8795",
-			IsValid:          true,
+	expected_results := CreditCardResponse{
+		[]*CreditCardResult{
+			{
+				CreditCardNumber: "123",
+				IsValid:          false,
+			},
+			{
+				CreditCardNumber: "3379 5135 6110 8795",
+				IsValid:          true,
+			},
 		},
 	}
+
 	mockResponseStatus.EXPECT().Json(expected_results).Return(resp).Once()
 
 	s.Equal(resp, NewLuhnController().Json(mockContext))
